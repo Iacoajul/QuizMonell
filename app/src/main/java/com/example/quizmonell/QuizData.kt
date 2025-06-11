@@ -1,13 +1,13 @@
 package com.example.quizmonell
 
-
+//Datenstruktur für Fragen
 data class Question(
     val text: String,
     val options: List<String>,
     val correctAnswerIndex: Int
 )
 
-// Beispiel-Fragen (könnten später aus einer Datenbank oder Datei geladen werden)
+// Beispiel-Fragen
 val sampleQuestions = listOf(
     Question("Was ist die Hauptstadt von Deutschland?", listOf("Berlin", "München", "Hamburg"), 0),
     Question("Welcher Planet ist der größte in unserem Sonnensystem?", listOf("Erde", "Mars", "Jupiter"), 2),

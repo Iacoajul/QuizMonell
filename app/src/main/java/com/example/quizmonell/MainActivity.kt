@@ -33,8 +33,9 @@ import androidx.compose.ui.unit.sp
 import com.example.quizmonell.ui.theme.QuizMonellTheme
 
 class MainActivity : ComponentActivity() {
-    private val quizViewModel: QuizViewModel by viewModels()
+    private val quizViewModel: QuizViewModel by viewModels() //get viewmodel
 
+    //get shit in app and on screen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//Kontrollkomponente - verwaltet die screens und übermittelt die parameter
 @Composable
 fun QuizApp(modifier: Modifier = Modifier, viewModel: QuizViewModel) {
     Surface(
@@ -61,6 +63,7 @@ fun QuizApp(modifier: Modifier = Modifier, viewModel: QuizViewModel) {
             QuizScreenState.START -> StartScreen(
                 onStartClick = { viewModel.startGame() }
             )
+            //sieht kompliziert aus, nimmt aber nur die params aus dem viewmodel
             QuizScreenState.QUESTION -> QuizScreen(
                 question = viewModel.currentQuestion,
                 score = viewModel.score,
@@ -79,6 +82,7 @@ fun QuizApp(modifier: Modifier = Modifier, viewModel: QuizViewModel) {
     }
 }
 
+//startbildschirm arrangement, Text und Startknopf
 @Composable
 fun StartScreen(onStartClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
@@ -95,14 +99,14 @@ fun StartScreen(onStartClick: () -> Unit, modifier: Modifier = Modifier) {
             modifier = Modifier.padding(bottom = 32.dp)
         )
         Button(
-            onClick = onStartClick,
+            onClick = onStartClick, //wird über Quizapp in das viewmodel geleitet, dh siehe viewmodel funktion
             modifier = Modifier.fillMaxWidth(0.7f)
         ) {
             Text("Quiz starten", fontSize = 18.sp)
         }
     }
 }
-
+//Quizmanagement - params by viewmodel
 @Composable
 fun QuizScreen(
     question: Question?,
@@ -166,15 +170,16 @@ fun QuizScreen(
             }
             val buttonTextColor = when {
                 answerFeedback == null -> MaterialTheme.colorScheme.onPrimaryContainer
-                isSelected && answerFeedback.second -> Color.White
-                isSelected && !answerFeedback.second -> Color.White
-                answerFeedback.second && isCorrectOption -> Color.White
+                isSelected && answerFeedback.second -> Color.Green
+                isSelected && !answerFeedback.second -> Color.Red
+                answerFeedback.second && isCorrectOption -> Color.Green
                 else -> MaterialTheme.colorScheme.onPrimaryContainer
             }
 
 
+            //Buttons, mapped on answers
             Button(
-                onClick = { if (answerFeedback == null) onAnswerSelected(index) },
+                onClick = { if (answerFeedback == null) onAnswerSelected(index) }, //onclick cast answer function from viewmodel
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -183,21 +188,22 @@ fun QuizScreen(
                     containerColor = buttonBackgroundColor,
                     contentColor = buttonTextColor
                 ),
+                //borders, abhängig von antwortkorrektheit
                 border = if (answerFeedback != null && isCorrectOption) BorderStroke(2.dp, Color.Green)
                     else if (answerFeedback != null && !isCorrectOption && isSelected) BorderStroke(2.dp, Color.Red)
                     else null
 
             ) {
-                Text(option, fontSize = 18.sp)
+                Text(option, fontSize = 18.sp) //text aus Quizdata antwortliste der Frage
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f)) // Drückt den "Weiter"-Button nach unten
+        Spacer(modifier = Modifier.weight(1f))
 
         // "Weiter"-Button (nur anzeigen, wenn eine Antwort gegeben wurde)
         if (answerFeedback != null) {
             Button(
-                onClick = onNextClick,
+                onClick = onNextClick, //onclick quizviewmodel.nextQuestion
                 modifier = Modifier.fillMaxWidth(0.7f)
             ) {
                 Text(
@@ -209,6 +215,7 @@ fun QuizScreen(
     }
 }
 
+//results... - params still managed by viewmodell
 @Composable
 fun ResultScreen(
     score: Int,
@@ -242,7 +249,7 @@ fun ResultScreen(
             modifier = Modifier.padding(bottom = 32.dp)
         )
         Button(
-            onClick = onRestartClick,
+            onClick = onRestartClick, //restart the game
             modifier = Modifier.fillMaxWidth(0.7f)
         ) {
             Text("Nochmal spielen", fontSize = 18.sp)
@@ -250,7 +257,8 @@ fun ResultScreen(
     }
 }
 
-// Previews (optional, aber hilfreich für die Entwicklung)
+// Previews, nützlich, wenn man kein gerät simulieren will....
+// aber kein qualitativ relevanter code...
 @Preview(showBackground = true, name = "Start Screen Preview")
 @Composable
 fun StartScreenPreview() {

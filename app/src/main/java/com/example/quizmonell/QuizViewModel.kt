@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
+//numerationsklasse für die Screens
 enum class QuizScreenState {
     START,
     QUESTION,
@@ -37,6 +38,7 @@ class QuizViewModel : ViewModel() {
     var answerFeedback by mutableStateOf<Pair<Int, Boolean>?>(null)
         private set
 
+    //Spielstart durch screenwechsel
     fun startGame() {
         currentScreen = QuizScreenState.QUESTION
         currentQuestionIndex = 0
@@ -44,6 +46,7 @@ class QuizViewModel : ViewModel() {
         answerFeedback = null
     }
 
+    //Frage evaluieren; wird auf AW Buttons gemapt
     fun answerQuestion(selectedOptionIndex: Int) {
         val question = currentQuestion ?: return
         val isCorrect = selectedOptionIndex == question.correctAnswerIndex
@@ -54,10 +57,11 @@ class QuizViewModel : ViewModel() {
         }
     }
 
+    //Der Name ist Programm
     fun nextQuestion() {
         answerFeedback = null // Feedback zurücksetzen für die nächste Frage
-        if (currentQuestionIndex < questions.size - 1) {
-            currentQuestionIndex++
+        if (currentQuestionIndex < questions.size - 1) { //check ob noch fragen da sind
+            currentQuestionIndex++ //Frage aktualisieren
         } else {
             // Quiz beendet
             currentScreen = QuizScreenState.RESULT
